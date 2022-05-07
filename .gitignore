@@ -2,3 +2,10 @@
 *.fdb_latexmk
 *.fls
 *.log
+student_test/work
+projekt/
+!projekt/*.vhd
+!projekt/*.xst
+!projekt/*.prj
+!projekt/*.lso
+*.zip

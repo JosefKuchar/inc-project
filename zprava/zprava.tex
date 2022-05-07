@@ -1,6 +1,7 @@
 \documentclass[11pt,a4paper,oneside]{article}
 \usepackage{amsfonts}
 \usepackage{systeme}
+\usepackage{graphicx}
 \usepackage[left=2cm,top=3cm]{geometry}
 
 \begin{document}
@@ -9,20 +10,31 @@ Jméno: Josef Kuchař \\
 Login: xkucha28
 \section*{Architektura navrženého obvodu (na úrovni RTL)}
 \subsection*{Schéma obvodu}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{schema}
 \subsection*{Popis funkce}
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam id dolor. Etiam dictum tincidunt diam. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. Integer vulputate sem a nibh rutrum consequat. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Mauris dolor felis, sagittis at, luctus sed, aliquam non, tellus. Duis condimentum augue id magna semper rutrum. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Donec vitae arcu. Fusce tellus odio, dapibus id fermentum quis, suscipit id erat. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Fusce nibh. Vivamus luctus egestas leo. Sed ac dolor sit amet purus malesuada congue. Fusce aliquam vestibulum ipsum. Duis sapien nunc, commodo et, interdum suscipit, sollicitudin et, dolor. Duis viverra diam non justo.
+Obvod slouží ke čtení z UART linky. Navrhnutý obvod používá FSM pro řízení chodu celého obvodu, schéma je zobrazeno níže.
+Dále jsou zde dva čítače, jeden počítá hodinové cykly a druhý počítá počet přečtených bitů.
+Pro výstup je použit shift register, který čte vždy po 16 cyklech, toto je zaručeno vhodně zvoleným comparatorem.
+Zbytek obvodu resetuje počítadlo cyklů po průchodu 8 cykly, abychom mohli začít číst po 16 cyklech.
+Konkrétnější popis je uveden níže v popisu funkce automatu.
 \newpage
 \section*{Návrh automatu (Finite State Machine)}
 \subsection*{Schéma automatu}
 Legenda
 \begin{itemize}
-  \item Stavy automatu: S1, S2, S3
-  \item Vstupní signály: X, Y, Z
-  \item Mealyho výstupy: A, B, C
-  \item Moorovy výstupy: P, Q, S
+  \item Stavy automatu: WAIT, START, RECIEVE, STOP, VALID
+  \item Vstupní signály: DIN, CNT\_CLK, CNT\_BITS
+  \item Moorovy výstupy: RST\_CNT, WAITING, READING, DOUT\_VLD
 \end{itemize}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{fsm}
 \subsection*{Popis funkce}
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam id dolor. Etiam dictum tincidunt diam. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. Integer vulputate sem a nibh rutrum consequat. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Mauris dolor felis, sagittis at, luctus sed, aliquam non, tellus. Duis condimentum augue id magna semper rutrum. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Donec vitae arcu. Fusce tellus odio, dapibus id fermentum quis, suscipit id erat. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Fusce nibh. Vivamus luctus egestas leo. Sed ac dolor sit amet purus malesuada congue. Fusce aliquam vestibulum ipsum. Duis sapien nunc, commodo et, interdum suscipit, sollicitudin et, dolor. Duis viverra diam non justo.
-\newpage
-\section*{Snímek obrazovky ze simulací}
+Automat začíná ve stavu \textbf{WAIT}. Při změně \textbf{DIN = 0} automat přejde do stavu \textbf{START}.
+Ve stavu \textbf{START} se začínají počítat hodinové cykly (\textbf{CNT\_CLK}).
+Jakmile \textbf{CNT\_CLK = 8} automat přejde do stavu podle \textbf{DIN}
+(1 $\rightarrow$ \textbf{WAIT} - startbit je neplatný, 0 $\rightarrow$ \textbf{RECIEVE}).
+Ve stavu \textbf{RECIEVE} je dokud \textbf{CNT\_BITS $<$ 8}, poté automat přejde do stavu \textbf{STOP}.
+Ve stavu \textbf{STOP} čeká dalších 16 cyklů a přejde do stavu podle \textbf{DIN} (0 $\rightarrow$ \textbf{WAIT} - stopbit je neplatný, 1 $\rightarrow$ \textbf{VALID}).
+Ve stavu \textbf{VALID} se zapíše na výstup, že je hodnota v shift registru validní a přejde zpět do stavu \textbf{WAIT}.
+% \newpage
+% \section*{Snímek obrazovky ze simulací}
 \end{document}
