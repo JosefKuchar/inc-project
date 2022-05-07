@@ -22,19 +22,22 @@ Konkrétnější popis je uveden níže v popisu funkce automatu.
 \subsection*{Schéma automatu}
 Legenda
 \begin{itemize}
-  \item Stavy automatu: WAIT, START, RECIEVE, STOP, VALID
+  \item Stavy automatu: AWAIT, START, RECIEVE, STOP, VALID
   \item Vstupní signály: DIN, CNT\_CLK, CNT\_BITS
   \item Moorovy výstupy: RST\_CNT, WAITING, READING, DOUT\_VLD
 \end{itemize}
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{fsm}
 \subsection*{Popis funkce}
-Automat začíná ve stavu \textbf{WAIT}. Při změně \textbf{DIN = 0} automat přejde do stavu \textbf{START}.
+Automat začíná ve stavu \textbf{AWAIT}. Při změně \textbf{DIN = 0} automat přejde do stavu \textbf{START}.
 Ve stavu \textbf{START} se začínají počítat hodinové cykly (\textbf{CNT\_CLK}).
-Jakmile \textbf{CNT\_CLK = 8} automat přejde do stavu podle \textbf{DIN}
-(1 $\rightarrow$ \textbf{WAIT} - startbit je neplatný, 0 $\rightarrow$ \textbf{RECIEVE}).
+Jakmile \textbf{CNT\_CLK = 7} automat přejde do stavu podle \textbf{DIN}
+(1 $\rightarrow$ \textbf{AWAIT} - startbit je neplatný, 0 $\rightarrow$ \textbf{RECIEVE}).
 Ve stavu \textbf{RECIEVE} je dokud \textbf{CNT\_BITS $<$ 8}, poté automat přejde do stavu \textbf{STOP}.
-Ve stavu \textbf{STOP} čeká dalších 16 cyklů a přejde do stavu podle \textbf{DIN} (0 $\rightarrow$ \textbf{WAIT} - stopbit je neplatný, 1 $\rightarrow$ \textbf{VALID}).
-Ve stavu \textbf{VALID} se zapíše na výstup, že je hodnota v shift registru validní a přejde zpět do stavu \textbf{WAIT}.
-% \newpage
-% \section*{Snímek obrazovky ze simulací}
+Ve stavu \textbf{STOP} čeká dalších 16 cyklů a přejde do stavu podle \textbf{DIN} (0 $\rightarrow$ \textbf{AWAIT} - stopbit je neplatný, 1 $\rightarrow$ \textbf{VALID}).
+Ve stavu \textbf{VALID} se zapíše na výstup, že je hodnota v shift registru validní a přejde zpět do stavu \textbf{AWAIT}.
+\newpage
+\section*{Snímek obrazovky ze simulací}
+\begin{center}
+  \includegraphics[width=0.98\textheight,height=\textwidth,keepaspectratio,angle=-90,origin=c]{screenshot}
+\end{center}
 \end{document}

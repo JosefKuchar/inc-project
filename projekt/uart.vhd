@@ -18,13 +18,15 @@ end UART_RX;
 
 -------------------------------------------------
 architecture behavioral of UART_RX is
+	-- FSM outputs
 	signal cnt_bits : std_logic_vector(3 downto 0) := "0000";
 	signal cnt_clk : std_logic_vector(3 downto 0) := "0000";
 	signal rst_cnt_fsm : std_logic;
-	signal rst_cnt : std_logic;
-	signal mid_bit : std_logic;
 	signal waiting : std_logic;
 	signal reading : std_logic;
+	-- Additional signals
+	signal rst_cnt : std_logic;
+	signal mid_bit : std_logic;
 begin
 	-- Finite state machine port mapping
 	fsm : entity work.UART_FSM(behavioral)
@@ -69,7 +71,7 @@ begin
 	-- Reset comparator
 	p_rst_cmp : process (rst_cnt_fsm, waiting, cnt_clk)
 	begin
-		if rst_cnt_fsm = '1' or (waiting = '1' and cnt_clk = "1000") then
+		if rst_cnt_fsm = '1' or (waiting = '1' and cnt_clk = "0111") then
 			rst_cnt <= '1';
 		else
 			rst_cnt <= '0';

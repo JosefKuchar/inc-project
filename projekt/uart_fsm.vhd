@@ -46,7 +46,7 @@ begin
             end if;
          when START =>
             -- We are in middle of start bit
-            if CNT_CLK = "1000" then
+            if CNT_CLK = "0111" then
                -- Start bit is invalid
                if DIN = '1' then
                   next_state <= AWAIT;
