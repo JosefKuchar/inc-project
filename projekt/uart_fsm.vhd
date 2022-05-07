@@ -38,6 +38,7 @@ begin
    -- Get next state
    p_state_decision : process (current_state, DIN, CNT_CLK, CNT_BITS)
    begin
+      next_state <= current_state;
       case current_state is
          when AWAIT =>
             -- We found the start of start bit
